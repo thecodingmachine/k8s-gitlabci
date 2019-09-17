@@ -2,7 +2,17 @@
 
 A Kubectl image bundled with the Google Cloud console.
 
-It also feature useful scripts to delete images in Gitlab Registry.
+It also feature useful scripts to easily create secrets and a script to delete images in Gitlab Registry.
+
+## Creating secrets
+
+Any environment variable starting with "K8S_SECRET_" in Gilab can be ported to a Kubernetes secret.
+
+Usage:
+
+```bash
+$ create-secret -n [namespace] [secret-name]
+```
 
 ## Deleting images
 
