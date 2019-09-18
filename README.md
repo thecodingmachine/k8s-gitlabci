@@ -4,14 +4,34 @@ A Kubectl image bundled with the Google Cloud console.
 
 It also feature useful scripts to easily create secrets and a script to delete images in Gitlab Registry.
 
-## Creating secrets
+## Creating secrets from CI environment variables
 
 Any environment variable starting with "K8S_SECRET_" in Gilab can be ported to a Kubernetes secret.
 
 Usage:
 
 ```bash
-$ create-secret -n [namespace] [secret-name]
+$ kutils secret::create --name=my_secrets_name > secret.yaml
+```
+
+If you want to change the prefix (for instance to get all environment variables starting with "K8S_DB_SECRET_"), use:
+
+```bash
+$ kutils secret::create --name=my_secrets_name --prefix=K8S_DB_SECRET_ > secret.yaml
+```
+
+## Editing the host in an Ingress file
+
+You can change the "host" of an Ingress file with a single command:
+
+```bash
+$ kutils ingress::edit-host ingress.yaml https://example.com
+```
+
+If your file contains many Ingresses, or if your Ingress contains many rules with many hosts, use:
+
+```bash
+$ kutils ingress::edit-host ingress.yaml  https://example.com --ingress-name=my-ingress --host-position=0
 ```
 
 ## Deleting images

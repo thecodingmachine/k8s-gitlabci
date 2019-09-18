@@ -1,0 +1,14 @@
+{
+    "chmod": "0755",
+    "main": "kutils.php",
+    "output": "build/kutils.phar",
+
+    "directories": ["src", "vendor"],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["test", "tests"],
+            "in": "vendor"
+         }
+    ],    "stub": true
+}
