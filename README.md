@@ -2,6 +2,8 @@
 
 A Kubectl image bundled with the Google Cloud console.
 
+Image on Docker hub: [thecodingmachine/k8s-gitlabci](https://hub.docker.com/r/thecodingmachine/k8s-gitlabci)
+
 It also feature useful scripts to easily create secrets and a script to delete images in Gitlab Registry.
 
 ## Creating secrets from CI environment variables
@@ -11,13 +13,13 @@ Any environment variable starting with "K8S_SECRET_" in Gilab can be ported to a
 Usage:
 
 ```bash
-$ kutils secret::create --name=my_secrets_name > secret.yaml
+$ kutils secret:create --name=my_secrets_name > secret.yaml
 ```
 
 If you want to change the prefix (for instance to get all environment variables starting with "K8S_DB_SECRET_"), use:
 
 ```bash
-$ kutils secret::create --name=my_secrets_name --prefix=K8S_DB_SECRET_ > secret.yaml
+$ kutils secret:create --name=my_secrets_name --prefix=K8S_DB_SECRET_ > secret.yaml
 ```
 
 ## Editing the host in an Ingress file
@@ -25,13 +27,13 @@ $ kutils secret::create --name=my_secrets_name --prefix=K8S_DB_SECRET_ > secret.
 You can change the "host" of an Ingress file with a single command:
 
 ```bash
-$ kutils ingress::edit-host ingress.yaml https://example.com
+$ kutils ingress:edit-host ingress.yaml https://example.com
 ```
 
 If your file contains many Ingresses, or if your Ingress contains many rules with many hosts, use:
 
 ```bash
-$ kutils ingress::edit-host ingress.yaml  https://example.com --ingress-name=my-ingress --host-position=0
+$ kutils ingress:edit-host ingress.yaml  https://example.com --ingress-name=my-ingress --host-position=0
 ```
 
 ## Deleting images
@@ -66,7 +68,7 @@ You will typically use this image in your `.gitlab-ci.yml` file.
 ```yml
 delete_image:
   stage: cleanup
-  image: thecodingmachine/gitlab-registry-cleaner:latest
+  image: thecodingmachine/k8s-gitlabci:latest
   script:
     - /delete_image.sh registry.gitlab.mycompany.com/path/to/image:$CI_COMMIT_REF_NAME
   when: manual
