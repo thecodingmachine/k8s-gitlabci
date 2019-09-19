@@ -6,6 +6,42 @@ Image on Docker hub: [thecodingmachine/k8s-gitlabci](https://hub.docker.com/r/th
 
 It also feature useful scripts to easily create secrets and a script to delete images in Gitlab Registry.
 
+## Connecting to a GCloud environment
+
+You can automate connection to a GKE cluster by setting these environment variables:
+
+- GCLOUD_SERVICE_KEY
+- GCLOUD_PROJECT
+- GCLOUD_ZONE
+- GKE_CLUSTER
+
+Then, simply call:
+ 
+```bash
+# connect_gcloud
+```
+
+Or if you want to connect automatically on container startup, set the environment variable:
+
+- AUTOCONNECT=1
+
+## Connecting to a "standard" environment
+
+If a "kubeconfig" file is enough to connect to your environement, you can automate connection to your cluster
+by setting the `KUBE_CONFIG_FILE` environment variable.
+
+- KUBE_CONFIG_FILE should contain the content of the *kubeconfig* file.
+
+Then, simply call:
+ 
+```bash
+# connect
+```
+
+Or if you want to connect automatically on container startup, set the environment variable:
+
+- AUTOCONNECT=1
+
 ## Creating secrets from CI environment variables
 
 Any environment variable starting with "K8S_SECRET_" in Gilab can be ported to a Kubernetes secret.

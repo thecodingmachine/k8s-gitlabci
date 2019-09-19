@@ -4,37 +4,35 @@ COPY --chown=docker:docker kutils .
 ENV PHP_INI_PHAR__READONLY=Off
 ENV PHP_EXTENSION_YAML=1
 
-#RUN curl -LSs https://box-project.github.io/box2/installer.php | php
+RUN curl -LSs https://box-project.github.io/box2/installer.php | php
 RUN composer install --no-dev
-#RUN ./box.phar build
+RUN ./box.phar build
 
-FROM claranet/gcloud-kubectl-docker
+FROM ubuntu:bionic
 
-RUN apk add --update ca-certificates \
- && apk add --update curl \
- && apk add --update gettext \
- && apk add --update bash \
- && rm /var/cache/apk/*
+# Install PHP
+RUN apt-get update -y && apt-get install -y --no-install-recommends php-cli php-yaml curl gnupg2 ca-certificates lsb-release
 
-#ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
-#RUN apk --update add ca-certificates
-#RUN echo "https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repositories
-RUN apk add --update php7 \
- && apk add --update php7-pecl-yaml \
- && apk add --update php7-iconv
+# Install GCloud SDK
+RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
-COPY delete_image.sh /delete_image.sh
-COPY create_secret.sh /usr/local/bin/create_secret
-#COPY --from=builder /usr/src/app/build/kutils.phar /usr/local/bin/kutils
+ENV KUBECONFIG=/root/.kube/config
 
-# fix work iconv library with alphine
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+COPY --from=builder /usr/src/app/build/kutils.phar /usr/local/bin/kutils
+COPY delete_image.sh /usr/local/bin/delete_image
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY connect_gcloud.sh /usr/local/bin/connect_gcloud
+COPY connect.sh /usr/local/bin/connect
 
-RUN mkdir kutils
-COPY --from=builder /usr/src/app/ /kutils
-RUN ln -s /kutils/kutils.php /usr/local/bin/kutils
+#RUN mkdir kutils
+#COPY --from=builder /usr/src/app/ /kutils
+#RUN ln -s /kutils/kutils.php /usr/local/bin/kutils
 #RUN cd app/ && php kutils.php
 
 # test installation
 RUN kutils | grep kutils
+
+ENTRYPOINT /usr/local/bin/entrypoint.sh

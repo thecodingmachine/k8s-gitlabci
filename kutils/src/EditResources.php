@@ -16,18 +16,18 @@ use function Safe\file_put_contents;
 use function Safe\yaml_parse_file;
 use function yaml_emit;
 
-class EditIngressHostCommand extends Command
+class EditResources extends Command
 {
     use FileUtils;
 
-    protected static $defaultName = 'ingress:edit-host';
+    protected static $defaultName = 'common:edit-limits';
 
     protected function configure()
     {
         $this
-            ->setDescription('Changes the host in an Ingress file')
+            ->setDescription('Edits the requests and limits of a pod / deployment / ...')
             ->setHelp(<<<HELP
-This command allows you to edit any yaml file containing an ingress to change the host.
+This command allows you to set the resources requests and limits 
 
 Usage:
 
@@ -35,19 +35,29 @@ Usage:
 HELP
             )
             ->addArgument('yamlFile', InputArgument::REQUIRED, 'The YAML file to edit')
-            ->addArgument('host', InputArgument::REQUIRED, 'The new value for the edited host')
-            ->addOption('ingress-name', null, InputOption::VALUE_OPTIONAL, 'The name of the ingress resource. If not specified and there is only one ingress this ingress will be selected.', null)
-            ->addOption('host-position', null, InputOption::VALUE_OPTIONAL, 'If there are many hosts in the ingress, you must pass the host position in the list', null);
+            ->addOption('resource-name', null, InputOption::VALUE_OPTIONAL, 'The name of the resource to edit. If not specified and there is only one resource, this resource will be selected.', null)
+            ->addOption('container-name', null, InputOption::VALUE_OPTIONAL, 'The name of the container to edit. If the pod contains only one container, this container will be selected.', null)
+            ->addOption('cpu-limit', null, InputOption::VALUE_OPTIONAL, 'The CPU limit', null)
+            ->addOption('memory-limit', null, InputOption::VALUE_OPTIONAL, 'The memory limit', null)
+            ->addOption('cpu-request', null, InputOption::VALUE_OPTIONAL, 'The CPU request', null)
+            ->addOption('memory-request', null, InputOption::VALUE_OPTIONAL, 'The memory request', null);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $content = file_get_contents($input->getArgument('yamlFile'));
-        $content = self::editIngress($content, $input->getArgument('host'), $input->getOption('ingress-name'), $input->getOption('host-position'));
+
+        $content = self::editRequestsLimits($content,
+            $input->getOption('resource-name'),
+            $input->getOption('container-name'),
+            $input->getOption('cpu-limit'),
+            $input->getOption('memory-limit'),
+            $input->getOption('cpu-request'),
+            $input->getOption('memory-request'));
         file_put_contents($input->getArgument('yamlFile'), $content);
     }
 
-    public static function editIngress(string $yaml, string $host, ?string $ingressName, ?int $hostPosition): string
+    public static function editRequestsLimits(string $yaml, ?string $resourceName, ?string $containerName, ?string $cpuLimit, ?string $memoryLimit, ?string $cpuRequest, ?string $memoryRequest): string
     {
         $resources = yaml_parse($yaml, -1, $nbDocs);
 
