@@ -20,6 +20,7 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
 ENV KUBECONFIG=/root/.kube/config
+RUN mkdir -p /root/.kube
 
 COPY --from=builder /usr/src/app/build/kutils.phar /usr/local/bin/kutils
 COPY delete_image.sh /usr/local/bin/delete_image
