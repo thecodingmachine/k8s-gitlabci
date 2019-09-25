@@ -19,6 +19,8 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
+ENV KUBECONFIG=/root/.kube/config
+
 COPY --from=builder /usr/src/app/build/kutils.phar /usr/local/bin/kutils
 COPY delete_image.sh /usr/local/bin/delete_image
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -32,10 +34,5 @@ COPY connect.sh /usr/local/bin/connect
 
 # test installation
 RUN kutils | grep kutils
-
-RUN useradd -ms /bin/bash docker
-USER docker
-
-ENV KUBECONFIG=/home/docker/.kube/config
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
