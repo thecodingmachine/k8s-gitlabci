@@ -35,4 +35,4 @@ COPY connect.sh /usr/local/bin/connect
 # test installation
 RUN kutils | grep kutils
 
-ENTRYPOINT /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
