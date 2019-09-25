@@ -58,6 +58,27 @@ If you want to change the prefix (for instance to get all environment variables 
 $ kutils secret:create --name=my_secrets_name --prefix=K8S_DB_SECRET_ > secret.yaml
 ```
 
+## Adding a secret a a secrets YAML file
+
+If you already have a secrets YAML file and you want to edit it, you can use the `secret:add` command.
+
+
+Usage:
+
+```bash
+$ kutils secret:add secret.yaml --secret-name=DB_PASSWORD --secret-value=foobar [--name=my-secrets]
+```
+
+The "--name" is optional and can be used to specify the name of the secret resource to edit (in case your YAML file contains multiple documents with multiple secrets).
+
+You can also ask `secret:add` to populate the secret from the content of an environment variable:
+
+```bash
+$ kutils secret:add secret.yaml --secret-name=DB_PASSWORD --secret-value-from-env=MYSQL_PASSWORD
+```
+
+In the example above, the `$MYSQL_PASSWORD` environment variable will be turned in a secret whose name is "DB_PASSWORD".
+
 ## Editing the host in an Ingress file
 
 You can change the "host" of an Ingress file with a single command:
