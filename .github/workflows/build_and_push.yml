@@ -7,10 +7,6 @@ on:
     tags:
       - '*'
 
-# Enables BuildKit
-env:
-  DOCKER_BUILDKIT: 1
-
 jobs:
 
   build:
