@@ -6,6 +6,7 @@ ENV PHP_EXTENSION_YAML=1
 
 RUN curl -LSs https://box-project.github.io/box2/installer.php | php
 RUN composer install --no-dev
+RUN mkdir build
 RUN ./box.phar build
 
 FROM ubuntu:bionic

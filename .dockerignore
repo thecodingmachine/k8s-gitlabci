@@ -1,2 +1,4 @@
+kutils/build
 kutils/vendor
 kutils/vendor-bin/box/vendor
+kutils/.phpunit.result.cache
