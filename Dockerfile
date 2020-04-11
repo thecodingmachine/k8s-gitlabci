@@ -20,6 +20,12 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
+# TODO: there is a bug in kubectl 1.18.0 so we force another version.
+# TODO: remove this when kubectl comes in a newer version by default
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.8.1/bin/linux/amd64/kubectl \
+ && chmod +x ./kubectl \
+ && mv ./kubectl /usr/local/bin/kubectl
+
 ENV KUBECONFIG=/root/.kube/config
 RUN mkdir -p /root/.kube
 
