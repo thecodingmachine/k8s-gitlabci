@@ -9,9 +9,7 @@ echoerr() {
 }
 
 
-if [ "$AUTOCONNECT" = "1" ] && [ -n "$GCLOUD_SERVICE_KEY" ] ; then
-  connect_gcloud
-elif [ "$AUTOCONNECT" = "1" ] && [ -n "$KUBE_CONFIG_FILE" ] ; then
+if [ "$AUTOCONNECT" = "1" ] ; then
   connect
 else
   echoerr "No connection to a Kubernetes cluster was configured on container startup"

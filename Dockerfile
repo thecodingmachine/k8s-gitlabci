@@ -33,6 +33,7 @@ COPY --from=builder /usr/src/app/build/kutils.phar /usr/local/bin/kutils
 COPY delete_image.sh /usr/local/bin/delete_image
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY connect_gcloud.sh /usr/local/bin/connect_gcloud
+COPY connect_standard.sh /usr/local/bin/connect_standard
 COPY connect.sh /usr/local/bin/connect
 
 #RUN mkdir kutils

@@ -18,7 +18,7 @@ You can automate connection to a GKE cluster by setting these environment variab
 Then, simply call:
  
 ```bash
-# connect_gcloud
+# connect
 ```
 
 Or if you want to connect automatically on container startup, set the environment variable:
